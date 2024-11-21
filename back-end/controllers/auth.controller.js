@@ -120,14 +120,14 @@ exports.forgetPassword = async (req, res, next) => {
     const user = await userModel.findOne({ email: email });
 
     if (!user) {
-      return res.status(401).json("There is no user with this email !");
+      return res.status(453).json("There is no user with this email !");
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "5 minutes",
     });
 
-    const resetLink = `http://localhost:3000/auth/reset-password/${token}`;
+    const resetLink = `http://localhost:3000/reset-password/${token}`;
 
     sendEmail(
       user.email,
@@ -140,8 +140,8 @@ exports.forgetPassword = async (req, res, next) => {
       `
     );
 
-    // return res.status(200).json({ message: "Reset link mailed successfully !" });
-    return res.status(200).json({ message: "Reset link mailed successfully !" , token: token });
+    return res.status(200).json({ message: "Reset link mailed successfully !" });
+    // return res.status(200).json({ message: "Reset link mailed successfully !" , token: token });
 
   } catch (error) {
     next(error);

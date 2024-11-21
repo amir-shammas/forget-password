@@ -20,7 +20,7 @@ const routes = [
   { path: "/login", element: <Login /> },
   { path: "/register", element: <Register /> },
   { path: "/forget-password", element: <ForgetPassword /> },
-  { path: "/reset-password", element: <ResetPassword /> },
+  { path: "/reset-password/:token", element: <ResetPassword /> },
 
   { path: "/my-account/*",
     element: (
