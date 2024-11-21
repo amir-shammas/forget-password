@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { registerValidator, loginValidator } = require("./../validators/auth.validator");
+const { registerValidator, loginValidator , forgetPasswordValidator , resetPasswordValidator } = require("./../validators/auth.validator");
 const { updateValidator , changePasswordValidator , changePasswordValidator_ByUser , changeRoleValidator , removeValidator , banValidator , unbanValidator } = require("./../validators/user.validator");
 
 
@@ -43,6 +43,14 @@ userSchema.statics.registerValidation = function (body) {
 //* login
 userSchema.statics.loginValidation = function (body) {
   return loginValidator.validate(body, { abortEarly: false });
+};
+//* forget password
+userSchema.statics.forgetPasswordValidation = function (body) {
+  return forgetPasswordValidator.validate(body, { abortEarly: false });
+};
+//* reset password
+userSchema.statics.resetPasswordValidation = function (body) {
+  return resetPasswordValidator.validate(body, { abortEarly: false });
 };
 //* update
 userSchema.statics.updateValidation = function (body) {

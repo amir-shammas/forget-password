@@ -185,9 +185,9 @@ export default function Login() {
                 </span>
               </label>
               <label className="login-form__password-forget">
-                <a className="login-form__password-forget-link" href="#">
+                <Link className="login-form__password-forget-link" to="/forget-password">
                   فراموشی رمز عبور
-                </a>
+                </Link>
               </label>
             </div>
           </form>

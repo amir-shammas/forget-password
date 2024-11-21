@@ -112,6 +112,11 @@ exports.forgetPassword = async (req, res, next) => {
 
     const { email } = req.body;
 
+    await userModel.forgetPasswordValidation(req.body).catch((err) => {
+      err.statusCode = 400;
+      throw err;
+    });
+
     const user = await userModel.findOne({ email: email });
 
     if (!user) {
@@ -135,7 +140,8 @@ exports.forgetPassword = async (req, res, next) => {
       `
     );
 
-    return res.status(200).json({ message: "Reset link mailed successfully !" });
+    // return res.status(200).json({ message: "Reset link mailed successfully !" });
+    return res.status(200).json({ message: "Reset link mailed successfully !" , token: token });
 
   } catch (error) {
     next(error);
@@ -146,10 +152,45 @@ exports.forgetPassword = async (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   try {
 
-    console.log("reset password");
-    return res.json("reset password api");
+    // console.log("reset password");
+    // return res.json("reset password api");
 
+    const { password, confirmPassword } = req.body;
 
+    await userModel.resetPasswordValidation(req.body).catch((err) => {
+      err.statusCode = 400;
+      throw err;
+    });
+
+    const hashedPassword = password ? await bcrypt.hash(password, 12) : undefined;
+
+    const token = req.params.token;
+
+    if (!token) {
+      return res.status(401).json({
+        message: "Token is required !",
+      });
+    }
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (!decodedToken) {
+      return res.status(401).json({
+        message: "Token is not verified !",
+      });
+    }
+
+    const user = await userModel.findOne({ _id: decodedToken.id });
+
+    if (!user) {
+      return res.status(404).json("user not found !");
+    }
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.status(200).json({ message: "password reset successfully !" });
 
   } catch (error) {
     next(error);
